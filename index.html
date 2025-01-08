@@ -3,84 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculator</title>
+    <title>calculator</title>
     <style>
-        .error-text {
-            color: red;
-        }
-        .success-text {
-            color: green;
-        }
+        .error-text { color: red; }
+        .success-text { color: green; }
     </style>
 </head>
 <body>
-    <input type="text" id="num1">
+    <input type="number" id="num1">
     <input type="text" id="operator">
-    <input type="text" id="num2">
+    <input type="number" id="num2">
     <button id="btn">Rēķināt</button>
     <p id="output"></p>
-
     <script>
+        const btn = document.getElementById("btn");
         const num1Input = document.getElementById("num1");
         const operatorInput = document.getElementById("operator");
         const num2Input = document.getElementById("num2");
-        const btn = document.getElementById("btn");
         const output = document.getElementById("output");
         const allowedOperators = ["+", "-", "*", "/"];
 
         btn.addEventListener("click", handleClick);
 
         function handleClick() {
-            const ary = [];
-            let hasErrors = false;
-
-            const num1Value = parseFloat(num1Input.value);
-            if (isNaN(num1Value)) {
-                ary.push("Pirmā vērtība nav skaitlis");
-                hasErrors = true;
-            }
-
-            const num2Value = parseFloat(num2Input.value);
-            if (isNaN(num2Value)) {
-                ary.push("Otrā vērtība nav skaitlis");
-                hasErrors = true;
-            }
-
-            const operatorValue = operatorInput.value;
-            if (!allowedOperators.includes(operatorValue)) {
-                ary.push("Nederīgs operators");
-                hasErrors = true;
-            }
-
-            if (hasErrors) {
-                output.innerHTML = `<h3>Kļūdas</h3>`;
-                ary.forEach(error => {
-                    output.innerHTML += `<p>${error}</p>`;
-                });
-                output.classList.add("error-text");
-                output.classList.remove("success-text");
-                return;
-            }
-
+            let num1Value = parseFloat(num1Input.value);
+            let operatorValue = operatorInput.value;
+            let num2Value = parseFloat(num2Input.value);
             let result;
-            switch (operatorValue) {
+            let errors = validateUserInput(num1Value, num2Value, operatorValue);
+            
+            output.classList.remove("error-text", "success-text");
+            
+            if (errors.length > 0) {
+                output.classList.add("error-text");
+                result = "<h3>Kļūdas</h3>" + errors.join("<br>");
+            } else {
+                output.classList.add("success-text");
+                result = calculate(num1Value, num2Value, operatorValue);
+            }
+            
+            output.innerHTML = result;
+        }
+
+        function validateUserInput(n1, n2, op) {
+            let errors = [];
+            
+            if (isNaN(n1)) {
+                errors.push("Pirmais skaitlis nav pareizs");
+            }
+            if (isNaN(n2)) {
+                errors.push("Otrais skaitlis nav pareizs");
+            }
+            if (!allowedOperators.includes(op)) {
+                errors.push("Nepareizs operators - izmantojiet +, -, * vai /");
+            }
+            
+            return errors;
+        }
+
+        function calculate(n1, n2, op) {
+            let result;
+            switch (op) {
                 case "+":
-                    result = num1Value + num2Value;
+                    result = n1 + n2;
                     break;
                 case "-":
-                    result = num1Value - num2Value;
+                    result = n1 - n2;
                     break;
                 case "*":
-                    result = num1Value * num2Value;
+                    result = n1 * n2;
                     break;
                 case "/":
-                    result = num1Value / num2Value;
+                    result = n1 / n2;
                     break;
             }
-
-            output.innerHTML = `Rezultāts: ` + result;
-            output.classList.add("success-text");
-            output.classList.remove("error-text");
+            return "Rezultāts: " + result;
         }
     </script>
 </body>
