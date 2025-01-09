@@ -14,23 +14,35 @@
     <input type="text" id="operator">
     <input type="number" id="num2">
     <button id="btn">Rēķināt</button>
+    <button id="clean-btn">Notīrīt</button>
     <p id="output"></p>
     <script>
         const btn = document.getElementById("btn");
+        const cleanbtn = document.getElementById("clean-btn");
         const num1Input = document.getElementById("num1");
         const operatorInput = document.getElementById("operator");
         const num2Input = document.getElementById("num2");
         const output = document.getElementById("output");
         const allowedOperators = ["+", "-", "*", "/"];
+        let errors;
 
         btn.addEventListener("click", handleClick);
+        cleanbtn.addEventListener("click", handleClean);
+
+        function handleClean() {
+            errors = "";
+            output.textContent = "";
+            num1Input.textContent = "";
+            num2Input.textContent = "";
+            operatorInput.textContent = "";
+        }
 
         function handleClick() {
             let num1Value = parseFloat(num1Input.value);
             let operatorValue = operatorInput.value;
             let num2Value = parseFloat(num2Input.value);
             let result;
-            let errors = validateUserInput(num1Value, num2Value, operatorValue);
+            errors = validateUserInput(num1Value, num2Value, operatorValue);
             
             output.classList.remove("error-text", "success-text");
             
